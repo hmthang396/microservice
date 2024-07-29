@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "declaration": true,
+    "outDir": "../../dist/libs/common",
+    "paths": {
+      "@app/common/entities": ["libs/common/src/entities/*"],
+      "@app/common/repositories": ["libs/common/src/repositories/*"],
+      "@app/common/dtos": ["libs/common/src/dtos/*"]
+    },
+    "assets": ["**/*.proto"],
+    "watchAssets": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "test", "**/*spec.ts"]
+}

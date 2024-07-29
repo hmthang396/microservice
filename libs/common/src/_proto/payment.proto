@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package payment;
+
+service PaymentsService {
+  rpc FindOne (PaymentId) returns (Payment) {}
+}
+
+message PaymentId {
+  int32 id = 1;
+}
+
+message Payment {
+  int32 id = 1;
+  string name = 2;
+}
