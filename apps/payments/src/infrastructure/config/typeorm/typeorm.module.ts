@@ -18,13 +18,13 @@ export const getTypeOrmModuleOptions = (
     password: config.getDatabasePassword(),
     database: config.getDatabaseName(),
     schema: config.getDatabaseSchema(),
-    entities: [__dirname + '/**/*.entity{.ts,.js}'],
-    migrations: [__dirname + '/migrations/*{.ts,.js}'],
+    entities: ['./apps/payments/src/domain/src/domain/entities/*.entity{.js}'],
+    migrations: ['./apps/payments/src/database/migrations/*{.ts}'],
     seeds: [__dirname + '/seeds/**/*{.ts,.js}'],
     factories: [__dirname + '/factories/**/*{.ts,.js}'],
-    synchronize: config.getDatabaseSync(),
-    logging: config.getTypeORMLogging(),
-    migrationsRun: config.getTypeORMMigrationsRun(),
+    synchronize: true,
+    logging: true,
+    migrationsRun: true,
     migrationsTableName: 'typeorm_migrations',
     seedTracking: true,
     logger: 'advanced-console',
@@ -40,3 +40,4 @@ export const getTypeOrmModuleOptions = (
   ],
 })
 export class TypeOrmConfigModule {}
+

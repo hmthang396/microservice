@@ -7,12 +7,10 @@ import { Module } from '@nestjs/common';
 import { EnvironmentConfigService } from '../environment-config/environment-config.service';
 import { EnvironmentConfigModule } from '../environment-config/environment-config.module';
 
-export const getTypeOrmModuleOptions = (config: EnvironmentConfigService): RabbitMQConfig => ({
+export const getRabbitMqModuleOptions = (config: EnvironmentConfigService): RabbitMQConfig => ({
   uri: `amqp://${config.getRabbitMQUsername()}:${config.getRabbitMQPassword()}@${config.getRabbitMQHost()}/`,
   connectionInitOptions: {
-    wait: false,
     timeout: 10000,
-    reject: true,
   },
   enableControllerDiscovery: true,
   defaultRpcTimeout: 10000,
@@ -26,8 +24,9 @@ export const getTypeOrmModuleOptions = (config: EnvironmentConfigService): Rabbi
     RabbitMQModule.forRootAsync(RabbitMQModule, {
       imports: [EnvironmentConfigModule],
       inject: [EnvironmentConfigService],
-      useFactory: getTypeOrmModuleOptions,
+      useFactory: getRabbitMqModuleOptions,
     }),
   ],
 })
 export class RabbitMQConfigModule {}
+

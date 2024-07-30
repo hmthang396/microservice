@@ -1,29 +1,31 @@
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { PaymentEntity } from './payment.entity';
 import { PSPTransactionStatus, PSPTransactionType } from '@app/libs/enums';
 import { AbstractEntity } from '@app/libs';
 
 @Entity({ schema: 'public', name: 'psp_transactions' })
-export class PspTransactionEntity extends AbstractEntity {
+export class PspTransactionEntity{
   @PrimaryGeneratedColumn({ name: 'id', type: 'integer' })
-  id!: number;
+  id: number;
 
   @Column({ name: 'uuid', type: 'uuid', generated: 'uuid' })
-  uuid!: string;
+  uuid: string;
 
   @Column({ name: 'payment_id', type: 'integer' })
-  paymentId!: number;
+  paymentId: number;
 
   @ManyToOne(() => PaymentEntity, (payment) => payment.pspTransactions)
   @JoinColumn({ name: 'payment_id' })
-  payment!: PaymentEntity;
+  payment: PaymentEntity;
 
   @Column({
     name: 'idempotency_key',
@@ -32,7 +34,7 @@ export class PspTransactionEntity extends AbstractEntity {
     nullable: false,
     unique: true,
   })
-  idempotencyKey!: string;
+  idempotencyKey: string;
 
   @Column({
     name: 'token',
@@ -40,7 +42,7 @@ export class PspTransactionEntity extends AbstractEntity {
     length: 255,
     nullable: true,
   })
-  token!: string;
+  token: string;
 
   @Column({
     name: 'type',
@@ -48,7 +50,7 @@ export class PspTransactionEntity extends AbstractEntity {
     enum: PSPTransactionType,
     nullable: false,
   })
-  type!: PSPTransactionType;
+  type: PSPTransactionType;
 
   @Column({
     name: 'status',
@@ -66,7 +68,7 @@ export class PspTransactionEntity extends AbstractEntity {
     scale: 2,
     default: 0,
   })
-  amount!: number;
+  amount: number;
 
   @Column({ length: 3 })
   currency: string;
@@ -87,5 +89,35 @@ export class PspTransactionEntity extends AbstractEntity {
     nullable: true,
     default: null,
   })
-  completedAt!: Date;
+  completedAt: Date;
+
+  @CreateDateColumn({
+    name: 'created_at',
+    type: 'datetime',
+    precision: null,
+    default: () => 'CURRENT_TIMESTAMP',
+    update: false,
+    nullable: false,
+  })
+  createdAt: Date;
+
+  @UpdateDateColumn({
+    name: 'updated_at',
+    type: 'datetime',
+    precision: null,
+    default: () => 'CURRENT_TIMESTAMP',
+    onUpdate: 'CURRENT_TIMESTAMP',
+    nullable: false,
+  })
+  updatedAt: Date;
+
+  @DeleteDateColumn({
+    name: 'deleted_at',
+    type: 'datetime',
+    default: null,
+    nullable: true,
+  })
+  deletedAt: Date;
 }
+
+

@@ -10,25 +10,19 @@ const options: DataSourceOptions & SeederOptions = {
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
-  entities: ['./dist/apps/payments/apps/payments/src/domain/entities/*.entity{.js}'],
-//   migrations: ['./apps/payments/src/database/migrations/*{.ts}'],
+  entities: ['./dist/apps/payments/apps/payments/src/domain/entities/*.entity.js'],
+  migrations: ['./apps/payments/src/database/migrations/*{.ts}'],
   migrationsRun: false,
-  migrationsTableName: 'history',
+  migrationsTableName: 'typeorm_migrations',
 };
 
 const config = new DataSource(options);
 
-// config
-//   .initialize()
-//   .then(() => {
-//     console.log(__dirname);
-//     console.log(process.env.DB_USERNAME);
-//     console.log(process.env.DB_PASSWORD);
-
-//     console.log('Data Source has been initialized!');
-//   })
-//   .catch((err) => {
-//     console.error('Error during Data Source initialization', err);
-//   });
 
 export default config;
+
+
+
+
+
+

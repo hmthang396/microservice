@@ -21,7 +21,7 @@
     "type:check": "tsc --noEmit --skipLibCheck",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli -d ./apps/$npm_config_service/src/infrastructure/config/typeorm/typeorm.config.ts",
     "migration:create": "cross-var ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli migration:create ./apps/$npm_config_service/src/database/migrations/$npm_config_name",
-    "migration:generate": "npm run build $npm_config_service && typeorm-ts-node-esm migration:generate -d ./apps/$npm_config_service/src/infrastructure/config/typeorm/typeorm.config.ts ./apps/$npm_config_service/src/database/migrations/$npm_config_name",
+    "migration:generate": "npm run typeorm -- migration:generate ./apps/payments/src/database/migrations/$npm_config_name",
     "migration:run": "npm run build $npm_config_service && cross-var ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli -d ./apps/$npm_config_service/src/infrastructure/config/typeorm/typeorm.config.ts migration:run"
   },
   "dependencies": {

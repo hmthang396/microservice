@@ -2,25 +2,26 @@ import { PaymentProvider, PaymentStatus } from '@app/libs/enums';
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   Index,
   OneToMany,
   PrimaryGeneratedColumn,
   Unique,
+  UpdateDateColumn,
 } from 'typeorm';
 import { PspTransactionEntity } from './psp-transaction.entity';
-import { AbstractEntity } from '@app/libs';
 
 @Entity({ schema: 'public', name: 'payments' })
 @Unique('IDX_3b6f5ba978729c5038646dea70', ['orderId', 'payerId'], {
   deferrable: 'INITIALLY IMMEDIATE',
 })
-export class PaymentEntity extends AbstractEntity {
+export class PaymentEntity{
   @PrimaryGeneratedColumn({ name: 'id', type: 'integer' })
-  id!: number;
+  id: number;
 
   @Column({ name: 'uuid', type: 'uuid', generated: 'uuid' })
-  uuid!: string;
+  uuid: string;
 
   @Column({
     name: 'order_id',
@@ -28,7 +29,7 @@ export class PaymentEntity extends AbstractEntity {
     nullable: false,
   })
   @Index('IDX_fe52f02449eaf27be2b2cb7acd')
-  orderId!: number;
+  orderId: number;
 
   @Column({
     name: 'payer_id',
@@ -36,7 +37,7 @@ export class PaymentEntity extends AbstractEntity {
     nullable: false,
   })
   @Index('IDX_edb1ecdd81ccd1462789350aaa')
-  payerId!: number;
+  payerId: number;
 
   @Column({
     name: 'provider',
@@ -44,7 +45,7 @@ export class PaymentEntity extends AbstractEntity {
     enum: PaymentProvider,
     nullable: false,
   })
-  provider!: PaymentProvider;
+  provider: PaymentProvider;
 
   @Column({
     name: 'status',
@@ -53,7 +54,7 @@ export class PaymentEntity extends AbstractEntity {
     nullable: false,
     default: PaymentStatus.Initiated,
   })
-  status!: PaymentStatus;
+  status: PaymentStatus;
 
   @Column({
     name: 'amount',
@@ -62,10 +63,10 @@ export class PaymentEntity extends AbstractEntity {
     scale: 2,
     default: 0,
   })
-  amount!: number;
+  amount: number;
 
   @Column({ length: 3 })
-  currency!: string;
+  currency: string;
 
   @CreateDateColumn({
     name: 'initiated_at',
@@ -75,7 +76,7 @@ export class PaymentEntity extends AbstractEntity {
     update: false,
     nullable: false,
   })
-  initiatedAt!: Date;
+  initiatedAt: Date;
 
   @Column({
     name: 'completed_at',
@@ -83,7 +84,7 @@ export class PaymentEntity extends AbstractEntity {
     nullable: true,
     default: null,
   })
-  completedAt!: Date;
+  completedAt: Date;
 
   @Column({
     name: 'wallet_updated',
@@ -91,7 +92,7 @@ export class PaymentEntity extends AbstractEntity {
     nullable: false,
     default: false,
   })
-  walletUpdated!: boolean;
+  walletUpdated: boolean;
 
   @Column({
     name: 'ledger_updated',
@@ -99,8 +100,39 @@ export class PaymentEntity extends AbstractEntity {
     nullable: false,
     default: false,
   })
-  ledgerUpdated!: boolean;
+  ledgerUpdated: boolean;
 
   @OneToMany(() => PspTransactionEntity, (psp_transactions) => psp_transactions.payment)
   pspTransactions!: PspTransactionEntity[];
+
+  @CreateDateColumn({
+    name: 'created_at',
+    type: 'datetime',
+    precision: null,
+    default: () => 'CURRENT_TIMESTAMP',
+    update: false,
+    nullable: false,
+  })
+  createdAt: Date;
+
+  @UpdateDateColumn({
+    name: 'updated_at',
+    type: 'datetime',
+    precision: null,
+    default: () => 'CURRENT_TIMESTAMP',
+    onUpdate: 'CURRENT_TIMESTAMP',
+    nullable: false,
+  })
+  updatedAt: Date;
+
+  @DeleteDateColumn({
+    name: 'deleted_at',
+    type: 'datetime',
+    default: null,
+    nullable: true,
+  })
+  deletedAt: Date;
 }
+
+
+

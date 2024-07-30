@@ -2,12 +2,11 @@ import { CreatePaymentUseCases } from '../../application/usecases/create-payment
 import { UseCaseProvider } from '../../domain/enums/usecase-provider.enum';
 import { PaymentRepository } from '../repositories/payment.repository';
 import { PspTransactionRepository } from '../repositories/psp-transaction.repository';
-import { PaypalModule } from '../services/paypal/paypal.module';
 import { PaypalService } from '../services/paypal/paypal.service';
 import { UseCaseProxy } from '../usecase-proxy/usecase-proxy';
 
 export const PaymentProvier = {
-  inject: [PaymentRepository,PspTransactionRepository,PaypalModule],
+  inject: [PaymentRepository, PspTransactionRepository, PaypalService],
   provide: UseCaseProvider.CreatePayment,
   useFactory: (
     paymentRepository: PaymentRepository,
@@ -18,3 +17,4 @@ export const PaymentProvier = {
       new CreatePaymentUseCases(paymentRepository, pspTransactionsRepository, paypalService),
     ),
 };
+
