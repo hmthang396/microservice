@@ -1,8 +1,9 @@
 import { PaymentEntity } from '../../domain/entities/payment.entity';
-import { CreatePaymentInput } from '../../presentations/dtos/payment-create-request.dto';
+import { PaymentCreateRequestDto } from '../../presentations/dtos/payment-create-request.dto';
+import { CreatePaymentInput } from '../../presentations/dtos/payment-create-request.input';
 
 export class PaymentMapper {
-  public static toCreate(dto: CreatePaymentInput) {
+  public static toCreate(dto: CreatePaymentInput | PaymentCreateRequestDto) {
     const entity = new PaymentEntity();
     entity.amount = dto.amount;
     entity.currency = dto.currency;

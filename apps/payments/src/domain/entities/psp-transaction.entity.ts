@@ -13,7 +13,7 @@ import { PSPTransactionStatus, PSPTransactionType } from '@app/libs/enums';
 import { AbstractEntity } from '@app/libs';
 
 @Entity({ schema: 'public', name: 'psp_transactions' })
-export class PspTransactionEntity{
+export class PspTransactionEntity {
   @PrimaryGeneratedColumn({ name: 'id', type: 'integer' })
   id: number;
 
@@ -119,5 +119,3 @@ export class PspTransactionEntity{
   })
   deletedAt: Date;
 }
-
-

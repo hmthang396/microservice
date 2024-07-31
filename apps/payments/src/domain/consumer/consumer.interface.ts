@@ -1,3 +1,4 @@
 export interface IConsumer<T, U> {
-  createPayment(payload: T, msg: U): void;
+  handlerMessage(payload: T, msg: U): void;
+  handlerFailedMessage(payload: T, msg: U): void;
 }

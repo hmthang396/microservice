@@ -1,133 +1,203 @@
 import { PaymentProvider } from '@app/libs/enums';
-import { z } from 'zod';
+import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+import {
+  IsArray,
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsUUID,
+  IsUrl,
+  Length,
+  Matches,
+  Max,
+  MaxLength,
+  Min,
+  MinLength,
+  ValidateNested,
+} from 'class-validator';
 
-export const Amount = z.object({
-  currency_code: z
-    .string({ required_error: 'Currency code is required' })
-    .max(3, { message: "currency_code isn't empty" })
-    .nonempty({ message: "currency_code isn't empty" }),
-  value: z.number({ required_error: 'Name is required' }).min(0, { message: "value isn't empty" }),
-});
+export class Amount {
+  @ApiProperty({ example: 'USD', description: 'Currency code' })
+  @IsString({ message: 'Currency code is required' })
+  @MaxLength(3, { message: "currency_code isn't empty" })
+  currency_code: string;
 
-export type Amount = z.infer<typeof Amount>;
+  @ApiProperty({ example: 100, description: 'Value' })
+  @IsNumber({}, { message: 'Value is required' })
+  @Min(0, { message: "value isn't empty" })
+  value: number;
+}
+export class Item {
+  @ApiProperty({ example: 'Item name', description: 'Item name' })
+  @IsString({ message: 'Name is required' })
+  @MinLength(1, { message: 'name must be at least 1 character long' })
+  @MaxLength(127, { message: 'name must be at most 127 characters long' })
+  name: string;
 
-export const Item = z.object({
-  name: z
-    .string({
-      required_error: 'Name is required',
-    })
-    .min(1, { message: 'name must be at least 1 character long' })
-    .max(127, { message: 'name must be at most 127 characters long' })
-    .nonempty({ message: "name can't be empty" }),
-  quantity: z.number().max(10, { message: 'quantity must be at most 10' }),
-  unit_amount: Amount,
-  image_url: z
-    .string()
-    .min(1, { message: 'image_url must be at least 1 character long' })
-    .max(2048, { message: 'image_url must be at most 2048 characters long' })
-    .optional(),
-  url: z
-    .string()
-    .min(1, { message: 'url must be at least 1 character long' })
-    .max(2048, { message: 'url must be at most 2048 characters long' })
-    .optional(),
-});
+  @ApiProperty({ example: 2, description: 'Quantity' })
+  @IsNumber()
+  @Max(10, { message: 'quantity must be at most 10' })
+  quantity: number;
 
-export type Item = z.infer<typeof Item>;
+  @ApiProperty({ type: Amount, description: 'Unit amount' })
+  @ValidateNested()
+  @Type(() => Amount)
+  unit_amount: Amount;
 
-export const BillingAddress = z.object({
-  address_line_1: z
-    .string()
-    .max(300, { message: "The first line of the address can't be more than 300 characters" })
-    .optional(),
-  address_line_2: z
-    .string()
-    .max(300, { message: "The second line of the address can't be more than 300 characters" })
-    .optional(),
-  admin_area_2: z
-    .string()
-    .max(120, { message: "A city, town, or village can't be more than 120 characters" })
-    .optional(),
-  admin_area_1: z
-    .string()
-    .max(300, {
-      message: "The highest-level sub-division in a country can't be more than 300 characters",
-    })
-    .optional(),
-  postal_code: z
-    .string()
-    .max(60, { message: "The postal code can't be more than 60 characters" })
-    .optional(),
-  country_code: z
-    .string({
-      required_error: 'Country code is required',
-    })
-    .length(2, { message: 'The country code only have 2 characters' }),
-});
+  @ApiProperty({ example: 'https://example.com/image.jpg', description: 'Image URL', required: false })
+  @IsOptional()
+  @IsString()
+  @MinLength(1, { message: 'image_url must be at least 1 character long' })
+  @MaxLength(2048, { message: 'image_url must be at most 2048 characters long' })
+  image_url?: string;
 
-export type BillingAddress = z.infer<typeof BillingAddress>;
+  @ApiProperty({ example: 'https://example.com', description: 'URL', required: false })
+  @IsOptional()
+  @IsString()
+  @MinLength(1, { message: 'url must be at least 1 character long' })
+  @MaxLength(2048, { message: 'url must be at most 2048 characters long' })
+  url?: string;
+}
 
-export const Card = z.object({
-  name: z
-    .string()
-    .min(1, { message: "Name can't be less than 0" })
-    .max(300, { message: "Name can't be more than 300 characters" }),
-  number: z
-    .string()
-    .min(13, { message: "Card Number can't be less than 13" })
-    .max(19, { message: "Card Number can't be more than 19 characters" }),
-  security_code: z
-    .string()
-    .min(3, { message: "Code can't be less than 3" })
-    .max(4, { message: "Code can't be more than 4 characters" }),
-  expiry: z
-    .string()
-    .length(7, { message: 'Expiry only have 7 characters' })
-    .regex(/^[0-9]{4}-(0[1-9]|1[0-2])$/, {
-      message: 'The card expiration year and month, in Internet date format.',
-    }),
-  billing_address: BillingAddress.optional(),
-});
+export class BillingAddress {
+  @ApiProperty({ example: '123 Main St', description: 'Address line 1', required: false })
+  @IsOptional()
+  @IsString()
+  @MaxLength(300, { message: "The first line of the address can't be more than 300 characters" })
+  address_line_1?: string;
 
-export type Card = z.infer<typeof Card>;
+  @ApiProperty({ example: 'Apt 4B', description: 'Address line 2', required: false })
+  @IsOptional()
+  @IsString()
+  @MaxLength(300, { message: "The second line of the address can't be more than 300 characters" })
+  address_line_2?: string;
 
-export const ExperienceContext = z.object({
-  return_url: z.string().url(),
-  cancel_url: z.string().url(),
-  brand_name: z
-    .string()
-    .min(0, { message: "Brand name can't be less than 1 characters" })
-    .max(3, { message: "Brand name can't be more than 127 characters" }),
-});
+  @ApiProperty({ example: 'New York', description: 'City', required: false })
+  @IsOptional()
+  @IsString()
+  @MaxLength(120, { message: "A city, town, or village can't be more than 120 characters" })
+  admin_area_2?: string;
 
-export type ExperienceContext = z.infer<typeof ExperienceContext>;
+  @ApiProperty({ example: 'NY', description: 'State', required: false })
+  @IsOptional()
+  @IsString()
+  @MaxLength(300, { message: "The highest-level sub-division in a country can't be more than 300 characters" })
+  admin_area_1?: string;
 
-export const CreatePaymentInput = z.object({
-  order_id: z
-    .number()
-    .min(0, { message: "OrderId can't be less than 0" })
-    .max(2000000000, { message: "OrderId can't be more than 2000000000" }),
-  user_id: z
-    .number()
-    .min(0, { message: "UserId can't be less than 0" })
-    .max(2000000000, { message: "UserId can't be more than 2000000000" }),
-  method: z.nativeEnum(PaymentProvider, { message: "Method can't be empty" }),
-  amount: z
-    .number()
-    .min(0, { message: "Amount can't be less than 0" })
-    .max(2000000000, { message: "Amount can't be more than 2000000000" }),
-  currency: z
-    .string()
-    .min(0, { message: "Currency can't be less than 0 characters" })
-    .max(3, { message: "Currency can't be more than 3 characters" })
-    .nonempty({ message: "Currency can't be empty" }),
-  idempotency_key: z
-    .string()
-    .uuid({ message: 'Idempotency key must be a valid UUID' })
-    .nonempty({ message: "Idempotency key can't be empty" }),
-  items: z.array(Item).nonempty({ message: "Items can't be empty" }).optional(),
-  experience_context: ExperienceContext,
-  payment_source: Card.optional(),
-});
+  @ApiProperty({ example: '10001', description: 'Postal code', required: false })
+  @IsOptional()
+  @IsString()
+  @MaxLength(60, { message: "The postal code can't be more than 60 characters" })
+  postal_code?: string;
 
-export type CreatePaymentInput = z.infer<typeof CreatePaymentInput>;
+  @ApiProperty({ example: 'US', description: 'Country code' })
+  @IsString({ message: 'Country code is required' })
+  @Length(2, 2, { message: 'The country code only has 2 characters' })
+  country_code: string;
+}
+
+export class Card {
+  @ApiProperty({ example: 'John Doe', description: 'Cardholder name' })
+  @IsString()
+  @MinLength(1, { message: "Name can't be less than 0" })
+  @MaxLength(300, { message: "Name can't be more than 300 characters" })
+  name: string;
+
+  @ApiProperty({ example: '4111111111111111', description: 'Card number' })
+  @IsString()
+  @MinLength(13, { message: "Card Number can't be less than 13" })
+  @MaxLength(19, { message: "Card Number can't be more than 19 characters" })
+  number: string;
+
+  @ApiProperty({ example: '123', description: 'Security code' })
+  @IsString()
+  @MinLength(3, { message: "Code can't be less than 3" })
+  @MaxLength(4, { message: "Code can't be more than 4 characters" })
+  security_code: string;
+
+  @ApiProperty({ example: '2024-12', description: 'Expiry date' })
+  @IsString()
+  @Length(7, 7, { message: 'Expiry only has 7 characters' })
+  @Matches(/^[0-9]{4}-(0[1-9]|1[0-2])$/, {
+    message: 'The card expiration year and month, in Internet date format.',
+  })
+  expiry: string;
+
+  @ApiProperty({ type: BillingAddress, description: 'Billing address', required: false })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => BillingAddress)
+  billing_address?: BillingAddress;
+}
+
+export class ExperienceContext {
+  @ApiProperty({ example: 'https://example.com/return', description: 'Return URL' })
+  @IsUrl()
+  return_url: string;
+
+  @ApiProperty({ example: 'https://example.com/cancel', description: 'Cancel URL' })
+  @IsUrl()
+  cancel_url: string;
+
+  @ApiProperty({ example: 'MyShop', description: 'Brand name' })
+  @IsString()
+  @MinLength(1, { message: "Brand name can't be less than 1 character" })
+  @MaxLength(127, { message: "Brand name can't be more than 127 characters" })
+  brand_name: string;
+}
+
+export class PaymentCreateRequestDto {
+  @ApiProperty({ example: 12345, description: 'Order ID' })
+  @IsNumber()
+  @Min(0, { message: "OrderId can't be less than 0" })
+  @Max(2000000000, { message: "OrderId can't be more than 2000000000" })
+  order_id: number;
+
+  @ApiProperty({ example: 12345, description: 'User ID' })
+  @IsNumber()
+  @Min(0, { message: "UserId can't be less than 0" })
+  @Max(2000000000, { message: "UserId can't be more than 2000000000" })
+  user_id: number;
+
+  @ApiProperty({ enum: PaymentProvider, description: 'Payment method' })
+  @IsEnum(PaymentProvider, { message: "Method can't be empty" })
+  method: PaymentProvider;
+
+  @ApiProperty({ example: 200, description: 'Amount' })
+  @IsNumber()
+  @Min(0, { message: "Amount can't be less than 0" })
+  @Max(2000000000, { message: "Amount can't be more than 2000000000" })
+  amount: number;
+
+  @ApiProperty({ example: 'USD', description: 'Currency' })
+  @IsString()
+  @MinLength(1, { message: "Currency can't be less than 1 character" })
+  @MaxLength(3, { message: "Currency can't be more than 3 characters" })
+  currency: string;
+
+  @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440000', description: 'Idempotency key' })
+  @IsString()
+  @IsUUID()
+  @MinLength(1, { message: "Idempotency key can't be empty" })
+  idempotency_key: string;
+
+  @ApiProperty({ type: [Item], description: 'Items', required: false })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => Item)
+  items?: Item[];
+
+  @ApiProperty({ type: ExperienceContext, description: 'Experience context' })
+  @ValidateNested()
+  @Type(() => ExperienceContext)
+  experience_context: ExperienceContext;
+
+  @ApiProperty({ type: Card, description: 'Payment source', required: false })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => Card)
+  payment_source?: Card;
+}

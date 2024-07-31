@@ -47,8 +47,6 @@ export class EnvironmentConfigService implements DatabaseConfig, RabbitMqConfig,
   }
 
   getDatabaseHost(): string {
-	console.log(this.configService.get<string>('DB_HOST'));
-	
     return this.configService.get<string>('DB_HOST');
   }
   getDatabasePort(): number {
@@ -70,4 +68,3 @@ export class EnvironmentConfigService implements DatabaseConfig, RabbitMqConfig,
     return this.configService.get<string>('TYPEORM_SYNCHRONIZE') === 'true';
   }
 }
-

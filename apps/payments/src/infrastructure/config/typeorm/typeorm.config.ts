@@ -18,11 +18,4 @@ const options: DataSourceOptions & SeederOptions = {
 
 const config = new DataSource(options);
 
-
 export default config;
-
-
-
-
-
-

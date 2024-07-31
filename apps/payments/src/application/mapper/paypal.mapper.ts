@@ -1,8 +1,9 @@
 import { CreateOrderRequest } from '../../infrastructure/services/paypal/paypal.type';
-import { CreatePaymentInput } from '../../presentations/dtos/payment-create-request.dto';
+import { PaymentCreateRequestDto } from '../../presentations/dtos/payment-create-request.dto';
+import { CreatePaymentInput } from '../../presentations/dtos/payment-create-request.input';
 
 export class PaypalMapper {
-  public static toOrderRequest(dto: CreatePaymentInput): CreateOrderRequest {
+  public static toOrderRequest(dto: CreatePaymentInput | PaymentCreateRequestDto): CreateOrderRequest {
     const bodyRequest: CreateOrderRequest = {
       intent: 'AUTHORIZE',
       purchase_units: [

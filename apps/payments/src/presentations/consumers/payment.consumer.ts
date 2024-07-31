@@ -1,12 +1,19 @@
-import { BadRequestException, Controller, Inject } from '@nestjs/common';
+import { Controller, Inject, Logger, UsePipes } from '@nestjs/common';
 import { UseCaseProvider } from '../../domain/enums/usecase-provider.enum';
 import { UseCaseProxy } from '../../infrastructure/usecase-proxy/usecase-proxy';
 import { CreatePaymentUseCases } from '../../application/usecases/create-payment.usecase';
-import { MessageHandlerErrorBehavior, Nack, RabbitRPC } from '@golevelup/nestjs-rabbitmq';
-import { CreatePaymentInput } from '../dtos/payment-create-request.dto';
+import {
+  MessageHandlerErrorBehavior,
+  Nack,
+  RabbitRPC,
+  defaultAssertQueueErrorHandler,
+} from '@golevelup/nestjs-rabbitmq';
+import { CreatePaymentInput } from '../dtos/payment-create-request.input';
 import { ConsumeMessage } from 'amqplib';
 import { PushMessageUsecase } from '../../application/usecases/push-message.usecase';
 import { IConsumer } from '../../domain/consumer/consumer.interface';
+import { ReplyErrorCallback } from '../../infrastructure/helpers';
+import { ZodValidationPipe } from '@app/libs/pipes/zod-validation.pipe';
 
 @Controller()
 export class PaymentConsumer implements IConsumer<CreatePaymentInput, ConsumeMessage> {
@@ -21,33 +28,42 @@ export class PaymentConsumer implements IConsumer<CreatePaymentInput, ConsumeMes
     exchange: 'exchange-payment',
     routingKey: 'create.payment',
     queue: 'create.payment',
-    createQueueIfNotExists: false,
-    errorBehavior: MessageHandlerErrorBehavior.ACK,
+    errorBehavior: MessageHandlerErrorBehavior.NACK,
+    errorHandler: ReplyErrorCallback,
+    assertQueueErrorHandler: defaultAssertQueueErrorHandler,
     queueOptions: {
       deadLetterExchange: 'exchange-payment',
-      deadLetterRoutingKey: 'payment.deadLetter',
+      deadLetterRoutingKey: 'create.payment.dead-letter',
       durable: true,
+      autoDelete: false,
     },
-    usePersistentReplyTo: true,
   })
-  async createPayment(
-    payload: CreatePaymentInput,
-    /* eslint-disable @typescript-eslint/no-unused-vars */
-    msg: ConsumeMessage,
-  ) {
+  @UsePipes(new ZodValidationPipe(CreatePaymentInput))
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+  async handlerMessage(payload: CreatePaymentInput, msg: ConsumeMessage) {
+    Logger.debug(`Consumer: create.payment`);
     try {
-      const isValid = CreatePaymentInput.safeParse(payload);
-      if (!isValid.success) {
-        // !TODO: Handle input data error
-        throw new BadRequestException('INVALID_PARAMETER', isValid.error.message);
-      }
       const payment = await this.createPaymentUsecase.getInstance().execute(payload);
       // !Todo: send message
-      await this.pushMessageUsecase
-        .getInstance()
-        .execute('exchange-payment', 'payment.created.success', payment);
+      await this.pushMessageUsecase.getInstance().execute('exchange-payment', 'payment.created.success', payment);
     } catch (error) {
       throw new Nack(true);
     }
+  }
+
+  @RabbitRPC({
+    exchange: 'exchange-payment',
+    routingKey: 'create.payment.dead-letter',
+    queue: 'create.payment.dead-letter',
+    errorBehavior: MessageHandlerErrorBehavior.ACK,
+    queueOptions: {
+      durable: true,
+      autoDelete: false,
+    },
+  })
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+  async handlerFailedMessage(payload: CreatePaymentInput, msg: ConsumeMessage) {
+    Logger.error(`Consumer: create.payment.dead-letter`);
+    return;
   }
 }

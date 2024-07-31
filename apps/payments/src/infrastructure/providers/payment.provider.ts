@@ -12,9 +12,5 @@ export const PaymentProvier = {
     paymentRepository: PaymentRepository,
     pspTransactionsRepository: PspTransactionRepository,
     paypalService: PaypalService,
-  ) =>
-    new UseCaseProxy(
-      new CreatePaymentUseCases(paymentRepository, pspTransactionsRepository, paypalService),
-    ),
+  ) => new UseCaseProxy(new CreatePaymentUseCases(paymentRepository, pspTransactionsRepository, paypalService)),
 };
-

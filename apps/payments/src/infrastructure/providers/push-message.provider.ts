@@ -6,6 +6,5 @@ import { UseCaseProxy } from '../usecase-proxy/usecase-proxy';
 export const PushMessageProvider = {
   inject: [AmqpConnection],
   provide: UseCaseProvider.PushMessage,
-  useFactory: (amqpConnection: AmqpConnection) =>
-    new UseCaseProxy(new PushMessageUsecase(amqpConnection)),
+  useFactory: (amqpConnection: AmqpConnection) => new UseCaseProxy(new PushMessageUsecase(amqpConnection)),
 };

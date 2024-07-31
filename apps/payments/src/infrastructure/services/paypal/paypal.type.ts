@@ -12,11 +12,7 @@ export type LandingPage = 'BILLING' | 'LOGIN' | 'NO_PREFERENCE' | 'GUEST_CHECKOU
 
 export type PaymentMethodPreference = 'UNRESTRICTED' | 'IMMEDIATE_PAYMENT_REQUIRED';
 
-export type Shippingype =
-  | 'SHIPPING'
-  | 'PICKUP_IN_PERSON'
-  | 'PICKUP_IN_STORE'
-  | 'PICKUP_FROM_PERSON';
+export type Shippingype = 'SHIPPING' | 'PICKUP_IN_PERSON' | 'PICKUP_IN_STORE' | 'PICKUP_FROM_PERSON';
 
 export type Usage = 'FIRST' | 'SUBSEQUENT' | 'DERIVED';
 

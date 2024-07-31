@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { ExperienceContext, Item } from './payment-create-request.dto';
+import { ExperienceContext, Item } from './payment-create-request.input';
 
 export const CreateOrderInput = z.object({
   order_id: z

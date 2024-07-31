@@ -1,15 +1,5 @@
 import { PSPTransactionType } from '@app/libs/enums';
-import {
-  IsEnum,
-  IsNotEmpty,
-  IsNumber,
-  IsString,
-  IsUUID,
-  Max,
-  MaxLength,
-  Min,
-  MinLength,
-} from 'class-validator';
+import { IsEnum, IsNotEmpty, IsNumber, IsString, IsUUID, Max, MaxLength, Min, MinLength } from 'class-validator';
 
 export class CreatePspTransaction {
   @IsNotEmpty({ message: "PaymentId can't empty" })
