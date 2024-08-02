@@ -2,7 +2,6 @@ import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { PaypalConfig } from 'apps/payments/src/domain/config/paypal.interface';
 import { EnvironmentConfigService } from '../../config/environment-config/environment-config.service';
 import { firstValueFrom } from 'rxjs';
-import { OAuthPaypal } from 'apps/payments/src/presentations/dtos/paypal-oauth.ouput';
 import { CreateOrderRequest, CreateOrderResponse } from './paypal.type';
 import { CreateOrderInput } from 'apps/payments/src/presentations/dtos/create-order.input';
 import { HttpService } from '@nestjs/axios';
@@ -39,5 +38,7 @@ export class PaypalService {
     }
   }
 
-  public async createOrderWithPaymentSourceCard(dto: CreateOrderInput) {}
+  public async createOrderWithPaymentSourceCard(dto: CreateOrderInput) {
+    console.log(dto);
+  }
 }

@@ -5,15 +5,15 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  ObjectLiteral,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { PaymentEntity } from './payment.entity';
 import { PSPTransactionStatus, PSPTransactionType } from '@app/libs/enums';
-import { AbstractEntity } from '@app/libs';
 
 @Entity({ schema: 'public', name: 'psp_transactions' })
-export class PspTransactionEntity {
+export class PspTransactionEntity implements ObjectLiteral {
   @PrimaryGeneratedColumn({ name: 'id', type: 'integer' })
   id: number;
 

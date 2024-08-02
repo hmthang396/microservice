@@ -2,7 +2,7 @@ import { MessageHandlerErrorBehavior, RabbitMQConfig, RabbitMQModule } from '@go
 import { Module } from '@nestjs/common';
 import { EnvironmentConfigService } from '../environment-config/environment-config.service';
 import { EnvironmentConfigModule } from '../environment-config/environment-config.module';
-import { RabbitMqConfig } from 'apps/payments/src/domain/config/rabbitmq.interface';
+import { RabbitMqConfig } from '@payments/domain/config/rabbitmq.interface';
 
 export const getRabbitMqModuleOptions = (config: RabbitMqConfig): RabbitMQConfig => ({
   uri: `amqp://${config.getRabbitMQUsername()}:${config.getRabbitMQPassword()}@${config.getRabbitMQHost()}/`,

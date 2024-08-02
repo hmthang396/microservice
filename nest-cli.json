@@ -13,10 +13,16 @@
     "payments": {
       "type": "application",
       "root": "apps/payments",
-      "entryFile": "main",
-      "sourceRoot": "apps/payments/src",
+      "entryFile": "apps/payments/src/main",
+      "sourceRoot": "./",
       "compilerOptions": {
-        "tsConfigPath": "apps/payments/tsconfig.app.json"
+        "tsConfigPath": "apps/payments/tsconfig.app.json",
+        "watchAssets": true,
+        "assets": [
+          {
+            "include": "/libs/common/src/proto/*.proto"
+          }
+        ]
       }
     },
     "common": {
@@ -35,6 +41,15 @@
       "sourceRoot": "apps/orders/src",
       "compilerOptions": {
         "tsConfigPath": "apps/orders/tsconfig.app.json"
+      }
+    },
+    "api-gateway": {
+      "type": "application",
+      "root": "apps/api-gateway",
+      "entryFile": "main",
+      "sourceRoot": "apps/api-gateway/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/api-gateway/tsconfig.app.json"
       }
     }
   }

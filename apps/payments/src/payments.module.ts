@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { EnvironmentConfigModule } from './infrastructure/config/environment-config/environment-config.module';
 import { UsecaseProxyModule } from './infrastructure/usecase-proxy/usecase-proxy.module';
-import { ConfigService } from '@nestjs/config';
 import { ControllersModule } from './presentations/controllers/controller.module';
 import { ConsumersModule } from './presentations/consumers/consumer.module';
 

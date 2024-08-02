@@ -5,6 +5,7 @@ import {
   DeleteDateColumn,
   Entity,
   Index,
+  ObjectLiteral,
   OneToMany,
   PrimaryGeneratedColumn,
   Unique,
@@ -16,7 +17,7 @@ import { PspTransactionEntity } from './psp-transaction.entity';
 @Unique('IDX_3b6f5ba978729c5038646dea70', ['orderId', 'payerId'], {
   deferrable: 'INITIALLY IMMEDIATE',
 })
-export class PaymentEntity {
+export class PaymentEntity implements ObjectLiteral {
   @PrimaryGeneratedColumn({ name: 'id', type: 'integer' })
   id: number;
 

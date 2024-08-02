@@ -1,12 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IPaymentRepository } from '../../domain/repositories/payment.repository.interface';
-import { InjectRepository } from '@nestjs/typeorm';
 import { PaymentEntity } from '../../domain/entities/payment.entity';
-import { DataSource, EntityManager, Repository } from 'typeorm';
+import { DataSource, EntityManager } from 'typeorm';
 import { AsyncLocalStorage } from 'async_hooks';
 
 @Injectable()
-export class PaymentRepository implements IPaymentRepository<PaymentEntity, EntityManager> {
+export class PaymentRepository implements IPaymentRepository<EntityManager> {
   constructor(
     @Inject('LocalStorage')
     private readonly localStorage: AsyncLocalStorage<any>,

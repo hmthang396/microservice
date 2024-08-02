@@ -4,9 +4,11 @@ import { IPaymentRepository } from '../../domain/repositories/payment.repository
 import { IUpdatePaymentUseCases } from '../../domain/usecases/update-payment.usecase.interface';
 
 export class UpdatePaymentUseCases implements IUpdatePaymentUseCases {
-  constructor(private paymentRepository: IPaymentRepository<PaymentEntity, EntityManager>) {}
+  constructor(private paymentRepository: IPaymentRepository<EntityManager>) {}
 
   async execute(dto: any): Promise<PaymentEntity> {
+    console.log(dto);
+
     return await this.paymentRepository.update();
   }
 }

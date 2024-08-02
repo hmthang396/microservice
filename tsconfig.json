@@ -24,18 +24,15 @@
       "@app/libs/*": [
         "libs/common/src/*"
       ],
-      "@payment/domain/*": [
-        "apps/payment/src/domain/*"
+      "@payments/*": [
+        "apps/payments/src/*"
       ],
-      "@payment/application/*": [
-        "apps/payment/src/application/*"
+      "@orders/*": [
+        "apps/orders/src/*"
       ],
-      "@payment/infrastructure/*": [
-        "apps/payment/src/infrastructure/*"
+      "@api-gateway/*": [
+        "apps/api-gateway/src/*"
       ],
-      "@payment/presentations/*": [
-        "apps/payment/src/presentations/*"
-      ]
     }
   }
 }

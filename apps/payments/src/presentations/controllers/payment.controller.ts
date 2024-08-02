@@ -1,29 +1,20 @@
-import { BadRequestException, Body, Controller, HttpCode, Inject, Injectable, Post } from '@nestjs/common';
-import { CreatePaymentInput } from '../dtos/payment-create-request.input';
-import { UseCaseProvider } from 'apps/payments/src/domain/enums/usecase-provider.enum';
-import { UseCaseProxy } from 'apps/payments/src/infrastructure/usecase-proxy/usecase-proxy';
-import { CreatePaymentUseCases } from 'apps/payments/src/application/usecases/create-payment.usecase';
-import { PaymentCreateRequestDto } from '../dtos/payment-create-request.dto';
-import { ApiGlobalResponse } from '../../infrastructure/common/decorators/api-global-response.decorators';
-import { PaymentEntity } from '../../domain/entities/payment.entity';
-import { ApiOperation } from '@nestjs/swagger';
+import { Controller, Inject } from '@nestjs/common';
+import { CreatePaymentUseCases } from '@payments/application/usecases/create-payment.usecase';
+import { UseCaseProvider } from '@payments/domain/enums/usecase-provider.enum';
+import { UseCaseProxy } from '@payments/infrastructure/usecase-proxy/usecase-proxy';
 
-@Controller({
-  version: '1',
-  path: 'payments',
-})
+@Controller()
 export class PaymentController {
   constructor(
     @Inject(UseCaseProvider.CreatePayment)
     private readonly createPaymentUsecase: UseCaseProxy<CreatePaymentUseCases>,
   ) {}
 
-  @ApiGlobalResponse(PaymentEntity)
-  @ApiOperation({ description: 'Branch Create for Admin' })
-  @Post('/')
-  @HttpCode(201)
-  async createPayment(@Body() payload: PaymentCreateRequestDto) {
-    const payment = await this.createPaymentUsecase.getInstance().execute(payload);
+  async createPayment(payload) {
+    const dto = { ...payload };
+    console.log(`run`, payload);
+
+    const payment = await this.createPaymentUsecase.getInstance().execute(dto);
     return payment;
   }
 }

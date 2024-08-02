@@ -1,0 +1,76 @@
+syntax = "proto3";
+
+package payments;
+
+// Message type for Amount
+message Amount {
+    string currency_code = 1;
+    double value = 2;
+}
+// Message type for Item
+message Item {
+    string name = 1;
+    int32 quantity = 2;
+    Amount unit_amount = 3;
+    string image_url = 4;
+    string url = 5;
+}
+// Message type for BillingAddress
+message BillingAddress {
+    string address_line_1 = 1;
+    string address_line_2 = 2;
+    string admin_area_2 = 3; // City
+    string admin_area_1 = 4; // State
+    string postal_code = 5;
+    string country_code = 6;
+}
+// Message type for Card
+message Card {
+    string name = 1;
+    string number = 2;
+    string security_code = 3;
+    string expiry = 4;
+    BillingAddress billing_address = 5;
+}
+// Message type for ExperienceContext
+message ExperienceContext {
+    string return_url = 1;
+    string cancel_url = 2;
+    string brand_name = 3;
+}
+// Message type for PaymentCreateRequest
+message PaymentCreateRequestDto {
+    int32 order_id = 1;
+    int32 user_id = 2;
+    string method = 3;
+    double amount = 4;
+    string currency = 5;
+    string idempotency_key = 6;
+    repeated Item items = 7;
+    ExperienceContext experience_context = 8;
+    Card payment_source = 9;
+}
+
+message PaymentEntity {
+	int32 id = 1;
+    string uuid = 2;
+    int32 order_id = 3;
+    int32 payer_id = 4;
+    string provider = 5;
+    string status = 6;
+    double amount = 7;
+    string currency = 8;
+    string initiated_at = 9;
+    string completed_at = 10;
+    bool wallet_updated = 11;
+    bool ledger_updated = 12;
+    string created_at = 14;
+    string updated_at = 15;
+    string deleted_at = 16;
+}
+
+// PaymentsService definition
+service PaymentsService {
+  rpc CreatePayment (PaymentCreateRequestDto) returns (PaymentEntity) {}
+}
+

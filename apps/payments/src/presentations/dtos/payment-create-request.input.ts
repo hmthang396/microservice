@@ -1,6 +1,4 @@
 import { PaymentProvider } from '@app/libs/enums';
-import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsString, MaxLength, Min } from 'class-validator';
 import { z } from 'zod';
 
 export const Amount = z.object({

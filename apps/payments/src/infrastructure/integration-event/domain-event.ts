@@ -1,7 +1,7 @@
 import { NotificationType } from 'apps/payments/src/domain/enums/notification.enum';
 import { INotification } from '../../domain/contact/message/notification.interface';
 
-export class DomainEvent<T> {
+export class DomainEvent {
   static CreatePaymentNotificationEvent = class<T> implements INotification<T> {
     data: T;
     id: number;
@@ -27,4 +27,3 @@ export class DomainEvent<T> {
     }
   };
 }
-// const a = new DomainEvent.CreatePaymentNotificationEvent<number>(1,1,new Date())

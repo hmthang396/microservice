@@ -1,4 +1,6 @@
-export interface IPspTransactionRepository<Entity, EntityManager> {
+import { PspTransactionEntity } from '../entities';
+
+export interface IPspTransactionRepository<EntityManager> {
   getEntityManager(): EntityManager;
-  create(entity: Entity): Promise<Entity>;
+  create(entity: PspTransactionEntity): Promise<PspTransactionEntity>;
 }
