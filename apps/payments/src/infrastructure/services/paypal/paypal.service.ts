@@ -6,9 +6,10 @@ import { CreateOrderRequest, CreateOrderResponse } from './paypal.type';
 import { CreateOrderInput } from 'apps/payments/src/presentations/dtos/create-order.input';
 import { HttpService } from '@nestjs/axios';
 import { GrpcInternalException } from '@app/libs/exceptions/gRPC';
+import { PaymentMethod } from '@payments/domain/services/payment-method.interface';
 
 @Injectable()
-export class PaypalService {
+export class PaypalService implements PaymentMethod<any, any> {
   private token: string;
 
   constructor(
@@ -19,6 +20,9 @@ export class PaypalService {
     this.token = Buffer.from(
       `${this.paypalConfig.getPaypalClientId()}:${this.paypalConfig.getPaypalClientSecret()}`,
     ).toString('base64');
+  }
+  processPayment(dto: any) {
+    throw new Error('Method not implemented.');
   }
 
   public async createOrder(payload: CreateOrderRequest, idempotency_key: string): Promise<CreateOrderResponse> {
@@ -35,7 +39,7 @@ export class PaypalService {
 
       return data;
     } catch (error) {
-		throw new GrpcInternalException(error.response.data.message);
+      throw new GrpcInternalException(error.response.data.message);
     }
   }
 

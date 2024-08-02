@@ -1,12 +1,28 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { StripeConfig } from '@payments/domain/config/stripe.interface';
 import { DatabaseConfig } from 'apps/payments/src/domain/config/database.interface';
 import { PaypalConfig } from 'apps/payments/src/domain/config/paypal.interface';
 import { RabbitMqConfig } from 'apps/payments/src/domain/config/rabbitmq.interface';
 
 @Injectable()
-export class EnvironmentConfigService implements DatabaseConfig, RabbitMqConfig, PaypalConfig {
+export class EnvironmentConfigService implements DatabaseConfig, RabbitMqConfig, PaypalConfig, StripeConfig {
   constructor(private configService: ConfigService) {}
+  getStripePublishableKey(): string {
+    return this.configService.get<string>('STRIPE_PUBLISHABLE_KEY');
+  }
+  getStripeSecretKey(): string {
+    return this.configService.get<string>('STRIPE_SECRET_KEY');
+  }
+  getStripeCancelURL(): string {
+    return this.configService.get<string>('STRIPE_CANCEL_URL');
+  }
+  getStripeReturnURL(): string {
+    return this.configService.get<string>('STRIPE_RETURN_URL');
+  }
+  getStripeURL(): string {
+    return this.configService.get<string>('STRIPE_URL');
+  }
   getPaypalClientId(): string {
     return this.configService.get<string>('PAYPAL_CLIENT_ID');
   }

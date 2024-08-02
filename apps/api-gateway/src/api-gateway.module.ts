@@ -10,7 +10,7 @@ export class ApiGatewayModule {
   static apiVersion: string;
   static apiPrefix: string;
   constructor(private readonly configService: ConfigService) {
-    ApiGatewayModule.port = +this.configService.get('SERVICE_PORT');
+    ApiGatewayModule.port = +this.configService.get('API_PORT');
     ApiGatewayModule.apiVersion = this.configService.get('API_VERSION_DEFAULT');
     ApiGatewayModule.apiPrefix = this.configService.get('API_PREFIX');
   }

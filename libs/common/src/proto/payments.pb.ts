@@ -66,6 +66,10 @@ export interface PaymentCreateRequest {
   paymentSource: CardRequest | undefined;
 }
 
+/** Message type for GetHealthRequest */
+export interface GetHealthRequest {
+}
+
 export interface PaymentCreateResponse {
   id: number;
   uuid: string;
@@ -84,12 +88,19 @@ export interface PaymentCreateResponse {
   deletedAt: string;
 }
 
+/** Define the HealthCheckResponse message */
+export interface HealthCheckResponse {
+  status: string;
+}
+
 export const PAYMENTS_PACKAGE_NAME = "payments";
 
 /** PaymentsService definition */
 
 export interface PaymentsServiceClient {
   createPayment(request: PaymentCreateRequest): Observable<PaymentCreateResponse>;
+
+  getHealth(request: GetHealthRequest): Observable<HealthCheckResponse>;
 }
 
 /** PaymentsService definition */
@@ -98,11 +109,15 @@ export interface PaymentsServiceController {
   createPayment(
     request: PaymentCreateRequest,
   ): Promise<PaymentCreateResponse> | Observable<PaymentCreateResponse> | PaymentCreateResponse;
+
+  getHealth(
+    request: GetHealthRequest,
+  ): Promise<HealthCheckResponse> | Observable<HealthCheckResponse> | HealthCheckResponse;
 }
 
 export function PaymentsServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["createPayment"];
+    const grpcMethods: string[] = ["createPayment", "getHealth"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("PaymentsService", method)(constructor.prototype[method], method, descriptor);

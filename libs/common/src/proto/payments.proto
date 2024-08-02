@@ -51,6 +51,9 @@ message PaymentCreateRequest {
     CardRequest payment_source = 9;
 }
 
+// Message type for GetHealthRequest
+message GetHealthRequest {}
+
 message PaymentCreateResponse {
 	int32 id = 1;
     string uuid = 2;
@@ -69,8 +72,14 @@ message PaymentCreateResponse {
     string deleted_at = 16;
 }
 
+// Define the HealthCheckResponse message
+message HealthCheckResponse {
+  string status = 1;
+}
+
 // PaymentsService definition
 service PaymentsService {
   rpc CreatePayment (PaymentCreateRequest) returns (PaymentCreateResponse) {}
+  rpc getHealth (GetHealthRequest) returns (HealthCheckResponse) {}
 }
 

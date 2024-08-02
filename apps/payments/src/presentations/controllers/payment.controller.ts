@@ -1,10 +1,12 @@
 import {
+  GetHealthRequest,
+  HealthCheckResponse,
   PaymentCreateRequest,
   PaymentCreateResponse,
   PaymentsServiceController,
   PaymentsServiceControllerMethods,
 } from '@app/libs/proto';
-import { Controller, Inject } from '@nestjs/common';
+import { Controller, Get, Inject, OnModuleInit } from '@nestjs/common';
 import { UseCaseProvider } from '@payments/domain/enums/usecase-provider.enum';
 import { UseCaseProxy } from '@payments/infrastructure/usecase-proxy/usecase-proxy';
 import { Observable } from 'rxjs';
@@ -12,7 +14,6 @@ import { PaymentMapper } from '../mapper/payment.mapper';
 import { ICreatePaymentUseCases } from '@payments/domain/usecases/create-payment.usecase.interface';
 import { PaymentCreateRequestDto } from '@app/libs';
 import { ValidateGrpcInput } from '@app/libs/decorators/validation-grpc-input.decorator';
-
 @Controller()
 @PaymentsServiceControllerMethods()
 export class PaymentController implements PaymentsServiceController {
@@ -20,6 +21,12 @@ export class PaymentController implements PaymentsServiceController {
     @Inject(UseCaseProvider.CreatePayment)
     private readonly createPaymentUsecase: UseCaseProxy<ICreatePaymentUseCases<PaymentCreateRequestDto>>,
   ) {}
+
+  getHealth(
+    request: GetHealthRequest,
+  ): HealthCheckResponse | Promise<HealthCheckResponse> | Observable<HealthCheckResponse> {
+    return { status: 'OK' };
+  }
 
   @ValidateGrpcInput(PaymentCreateRequestDto)
   createPayment(
