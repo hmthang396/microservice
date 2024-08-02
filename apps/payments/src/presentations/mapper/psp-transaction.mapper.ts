@@ -1,8 +1,7 @@
 import { PSPTransactionType } from '@app/libs/enums';
 import { PspTransactionEntity } from '../../domain/entities/psp-transaction.entity';
 import { CreatePspTransaction } from '../dtos/create-psp-transaction.input';
-import { CreatePaymentInput } from '../dtos/payment-create-request.input';
-import { PaymentCreateRequestDto } from '../dtos/payment-create-request.dto';
+import { PaymentCreateRequestDto } from '@app/libs';
 
 export class PspTransactionMapper {
   public static toCreate(dto: CreatePspTransaction) {
@@ -16,12 +15,12 @@ export class PspTransactionMapper {
     return entity;
   }
 
-  public static toEntity(dto: CreatePaymentInput | PaymentCreateRequestDto, paymentId: number, token: string) {
+  public static toEntity(dto: PaymentCreateRequestDto, paymentId: number, token: string) {
     const entity = new PspTransactionEntity();
     entity.paymentId = paymentId;
     entity.amount = dto.amount;
     entity.currency = dto.currency;
-    entity.idempotencyKey = dto.idempotency_key;
+    entity.idempotencyKey = dto.idempotencyKey;
     entity.type = PSPTransactionType.Payment;
     entity.token = token;
     return entity;

@@ -1,4 +1,4 @@
-import { Controller, Inject, Logger, UsePipes } from '@nestjs/common';
+import { Controller, Inject, Logger, UsePipes, ValidationPipe } from '@nestjs/common';
 import { UseCaseProvider } from '../../domain/enums/usecase-provider.enum';
 import { UseCaseProxy } from '../../infrastructure/usecase-proxy/usecase-proxy';
 import { CreatePaymentUseCases } from '../../application/usecases/create-payment.usecase';
@@ -8,15 +8,14 @@ import {
   RabbitRPC,
   defaultAssertQueueErrorHandler,
 } from '@golevelup/nestjs-rabbitmq';
-import { CreatePaymentInput } from '../dtos/payment-create-request.input';
 import { ConsumeMessage } from 'amqplib';
 import { PushMessageUsecase } from '../../application/usecases/push-message.usecase';
 import { IConsumer } from '../../domain/consumer/consumer.interface';
 import { ReplyErrorCallback } from '../../infrastructure/helpers';
-import { ZodValidationPipe } from '@app/libs/pipes/zod-validation.pipe';
+import { PaymentCreateRequestDto } from '@app/libs';
 
 @Controller()
-export class PaymentConsumer implements IConsumer<CreatePaymentInput, ConsumeMessage> {
+export class PaymentConsumer implements IConsumer<PaymentCreateRequestDto, ConsumeMessage> {
   constructor(
     @Inject(UseCaseProvider.CreatePayment)
     private readonly createPaymentUsecase: UseCaseProxy<CreatePaymentUseCases>,
@@ -38,9 +37,9 @@ export class PaymentConsumer implements IConsumer<CreatePaymentInput, ConsumeMes
       autoDelete: false,
     },
   })
-  @UsePipes(new ZodValidationPipe(CreatePaymentInput))
+  @UsePipes(PaymentCreateRequestDto)
   /* eslint-disable @typescript-eslint/no-unused-vars */
-  async handlerMessage(payload: CreatePaymentInput, msg: ConsumeMessage) {
+  async handlerMessage(payload: PaymentCreateRequestDto, msg: ConsumeMessage) {
     Logger.debug(`Consumer: create.payment`);
     try {
       const payment = await this.createPaymentUsecase.getInstance().execute(payload);
@@ -62,7 +61,7 @@ export class PaymentConsumer implements IConsumer<CreatePaymentInput, ConsumeMes
     },
   })
   /* eslint-disable @typescript-eslint/no-unused-vars */
-  async handlerFailedMessage(payload: CreatePaymentInput, msg: ConsumeMessage) {
+  async handlerFailedMessage(payload: PaymentCreateRequestDto, msg: ConsumeMessage) {
     Logger.error(`Consumer: create.payment.dead-letter`);
     return;
   }

@@ -5,7 +5,7 @@ import { IPspTransactionRepository } from '../../domain/repositories/psp-transac
 import { AsyncLocalStorage } from 'async_hooks';
 
 @Injectable()
-export class PspTransactionRepository implements IPspTransactionRepository<PspTransactionEntity, EntityManager> {
+export class PspTransactionRepository implements IPspTransactionRepository<EntityManager> {
   constructor(
     @Inject('LocalStorage')
     private readonly localStorage: AsyncLocalStorage<any>,

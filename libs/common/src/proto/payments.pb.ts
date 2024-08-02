@@ -5,28 +5,28 @@
 // source: libs/common/src/proto/payments.proto
 
 /* eslint-disable */
-import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
-import { Observable } from 'rxjs';
+import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
+import { Observable } from "rxjs";
 
-export const protobufPackage = 'payments';
+export const protobufPackage = "payments";
 
 /** Message type for Amount */
-export interface Amount {
+export interface AmountRequest {
   currencyCode: string;
   value: number;
 }
 
 /** Message type for Item */
-export interface Item {
+export interface ItemRequest {
   name: string;
   quantity: number;
-  unitAmount: Amount | undefined;
+  unitAmount: AmountRequest | undefined;
   imageUrl: string;
   url: string;
 }
 
 /** Message type for BillingAddress */
-export interface BillingAddress {
+export interface BillingAddressRequest {
   addressLine1: string;
   addressLine2: string;
   /** City */
@@ -38,35 +38,35 @@ export interface BillingAddress {
 }
 
 /** Message type for Card */
-export interface Card {
+export interface CardRequest {
   name: string;
   number: string;
   securityCode: string;
   expiry: string;
-  billingAddress: BillingAddress | undefined;
+  billingAddress: BillingAddressRequest | undefined;
 }
 
 /** Message type for ExperienceContext */
-export interface ExperienceContext {
+export interface ExperienceContextRequest {
   returnUrl: string;
   cancelUrl: string;
   brandName: string;
 }
 
 /** Message type for PaymentCreateRequest */
-export interface PaymentCreateRequestDto {
+export interface PaymentCreateRequest {
   orderId: number;
   userId: number;
   method: string;
   amount: number;
   currency: string;
   idempotencyKey: string;
-  items: Item[];
-  experienceContext: ExperienceContext | undefined;
-  paymentSource: Card | undefined;
+  items: ItemRequest[];
+  experienceContext: ExperienceContextRequest | undefined;
+  paymentSource: CardRequest | undefined;
 }
 
-export interface PaymentEntity {
+export interface PaymentCreateResponse {
   id: number;
   uuid: string;
   orderId: number;
@@ -84,33 +84,35 @@ export interface PaymentEntity {
   deletedAt: string;
 }
 
-export const PAYMENTS_PACKAGE_NAME = 'payments';
+export const PAYMENTS_PACKAGE_NAME = "payments";
 
 /** PaymentsService definition */
 
 export interface PaymentsServiceClient {
-  createPayment(request: PaymentCreateRequestDto): Observable<PaymentEntity>;
+  createPayment(request: PaymentCreateRequest): Observable<PaymentCreateResponse>;
 }
 
 /** PaymentsService definition */
 
 export interface PaymentsServiceController {
-  createPayment(request: PaymentCreateRequestDto): Promise<PaymentEntity> | Observable<PaymentEntity> | PaymentEntity;
+  createPayment(
+    request: PaymentCreateRequest,
+  ): Promise<PaymentCreateResponse> | Observable<PaymentCreateResponse> | PaymentCreateResponse;
 }
 
 export function PaymentsServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ['createPayment'];
+    const grpcMethods: string[] = ["createPayment"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcMethod('PaymentsService', method)(constructor.prototype[method], method, descriptor);
+      GrpcMethod("PaymentsService", method)(constructor.prototype[method], method, descriptor);
     }
     const grpcStreamMethods: string[] = [];
     for (const method of grpcStreamMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcStreamMethod('PaymentsService', method)(constructor.prototype[method], method, descriptor);
+      GrpcStreamMethod("PaymentsService", method)(constructor.prototype[method], method, descriptor);
     }
   };
 }
 
-export const PAYMENTS_SERVICE_NAME = 'PaymentsService';
+export const PAYMENTS_SERVICE_NAME = "PaymentsService";

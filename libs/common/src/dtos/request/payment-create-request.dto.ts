@@ -1,4 +1,5 @@
 import { PaymentProvider } from '@app/libs/enums';
+import { AmountRequest, BillingAddressRequest, CardRequest, ExperienceContextRequest, ItemRequest, PaymentCreateRequest } from '@app/libs/proto';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
@@ -18,18 +19,18 @@ import {
   ValidateNested,
 } from 'class-validator';
 
-export class Amount {
+export class AmountDto implements AmountRequest {
   @ApiProperty({ example: 'USD', description: 'Currency code' })
   @IsString({ message: 'Currency code is required' })
   @MaxLength(3, { message: "currency_code isn't empty" })
-  currency_code: string;
+  currencyCode: string;
 
   @ApiProperty({ example: 100, description: 'Value' })
   @IsNumber({}, { message: 'Value is required' })
   @Min(0, { message: "value isn't empty" })
   value: number;
 }
-export class Item {
+export class ItemDto implements ItemRequest {
   @ApiProperty({ example: 'Item name', description: 'Item name' })
   @IsString({ message: 'Name is required' })
   @MinLength(1, { message: 'name must be at least 1 character long' })
@@ -41,64 +42,64 @@ export class Item {
   @Max(10, { message: 'quantity must be at most 10' })
   quantity: number;
 
-  @ApiProperty({ type: Amount, description: 'Unit amount' })
+  @ApiProperty({ type: AmountDto, description: 'Unit amount' })
   @ValidateNested()
-  @Type(() => Amount)
-  unit_amount: Amount;
+  @Type(() => AmountDto)
+  unitAmount: AmountDto;
 
   @ApiProperty({ example: 'https://example.com/image.jpg', description: 'Image URL', required: false })
   @IsOptional()
   @IsString()
   @MinLength(1, { message: 'image_url must be at least 1 character long' })
   @MaxLength(2048, { message: 'image_url must be at most 2048 characters long' })
-  image_url?: string;
+  imageUrl: string;
 
   @ApiProperty({ example: 'https://example.com', description: 'URL', required: false })
   @IsOptional()
   @IsString()
   @MinLength(1, { message: 'url must be at least 1 character long' })
   @MaxLength(2048, { message: 'url must be at most 2048 characters long' })
-  url?: string;
+  url: string;
 }
 
-export class BillingAddress {
+export class BillingAddressDto implements BillingAddressRequest {
   @ApiProperty({ example: '123 Main St', description: 'Address line 1', required: false })
   @IsOptional()
   @IsString()
   @MaxLength(300, { message: "The first line of the address can't be more than 300 characters" })
-  address_line_1?: string;
+  addressLine1: string;
 
   @ApiProperty({ example: 'Apt 4B', description: 'Address line 2', required: false })
   @IsOptional()
   @IsString()
   @MaxLength(300, { message: "The second line of the address can't be more than 300 characters" })
-  address_line_2?: string;
+  addressLine2: string;
 
   @ApiProperty({ example: 'New York', description: 'City', required: false })
   @IsOptional()
   @IsString()
   @MaxLength(120, { message: "A city, town, or village can't be more than 120 characters" })
-  admin_area_2?: string;
+  adminArea2: string;
 
   @ApiProperty({ example: 'NY', description: 'State', required: false })
   @IsOptional()
   @IsString()
   @MaxLength(300, { message: "The highest-level sub-division in a country can't be more than 300 characters" })
-  admin_area_1?: string;
+  adminArea1: string;
 
   @ApiProperty({ example: '10001', description: 'Postal code', required: false })
   @IsOptional()
   @IsString()
   @MaxLength(60, { message: "The postal code can't be more than 60 characters" })
-  postal_code?: string;
+  postalCode: string;
 
   @ApiProperty({ example: 'US', description: 'Country code' })
   @IsString({ message: 'Country code is required' })
   @Length(2, 2, { message: 'The country code only has 2 characters' })
-  country_code: string;
+  countryCode: string;
 }
 
-export class Card {
+export class CardDto implements CardRequest {
   @ApiProperty({ example: 'John Doe', description: 'Cardholder name' })
   @IsString()
   @MinLength(1, { message: "Name can't be less than 0" })
@@ -115,7 +116,7 @@ export class Card {
   @IsString()
   @MinLength(3, { message: "Code can't be less than 3" })
   @MaxLength(4, { message: "Code can't be more than 4 characters" })
-  security_code: string;
+  securityCode: string;
 
   @ApiProperty({ example: '2024-12', description: 'Expiry date' })
   @IsString()
@@ -125,45 +126,45 @@ export class Card {
   })
   expiry: string;
 
-  @ApiProperty({ type: BillingAddress, description: 'Billing address', required: false })
+  @ApiProperty({ type: BillingAddressDto, description: 'Billing address', required: false })
   @IsOptional()
   @ValidateNested()
-  @Type(() => BillingAddress)
-  billing_address?: BillingAddress;
+  @Type(() => BillingAddressDto)
+  billingAddress: BillingAddressDto;
 }
 
-export class ExperienceContext {
+export class ExperienceContext implements ExperienceContextRequest {
   @ApiProperty({ example: 'https://example.com/return', description: 'Return URL' })
   @IsUrl()
-  return_url: string;
+  returnUrl: string;
 
   @ApiProperty({ example: 'https://example.com/cancel', description: 'Cancel URL' })
   @IsUrl()
-  cancel_url: string;
+  cancelUrl: string;
 
   @ApiProperty({ example: 'MyShop', description: 'Brand name' })
   @IsString()
   @MinLength(1, { message: "Brand name can't be less than 1 character" })
   @MaxLength(127, { message: "Brand name can't be more than 127 characters" })
-  brand_name: string;
+  brandName: string;
 }
 
-export class PaymentCreateRequestDto {
+export class PaymentCreateRequestDto implements PaymentCreateRequest {
   @ApiProperty({ example: 12345, description: 'Order ID' })
   @IsNumber()
   @Min(0, { message: "OrderId can't be less than 0" })
   @Max(2000000000, { message: "OrderId can't be more than 2000000000" })
-  order_id: number;
+  orderId: number;
 
   @ApiProperty({ example: 12345, description: 'User ID' })
   @IsNumber()
   @Min(0, { message: "UserId can't be less than 0" })
   @Max(2000000000, { message: "UserId can't be more than 2000000000" })
-  user_id: number;
+  userId: number;
 
   @ApiProperty({ enum: PaymentProvider, description: 'Payment method' })
-  @IsEnum(PaymentProvider, { message: "Method can't be empty" })
-  method: PaymentProvider;
+  @IsEnum(PaymentProvider, { message: 'Payment method must be one of the following values: Paypal, Stripe, COD, Visa' })
+  method: string;
 
   @ApiProperty({ example: 200, description: 'Amount' })
   @IsNumber()
@@ -181,23 +182,23 @@ export class PaymentCreateRequestDto {
   @IsString()
   @IsUUID()
   @MinLength(1, { message: "Idempotency key can't be empty" })
-  idempotency_key: string;
+  idempotencyKey: string;
 
-  @ApiProperty({ type: [Item], description: 'Items', required: false })
+  @ApiProperty({ type: [ItemDto], description: 'Items', required: false })
   @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => Item)
-  items?: Item[];
+  @Type(() => ItemDto)
+  items: ItemDto[];
 
   @ApiProperty({ type: ExperienceContext, description: 'Experience context' })
   @ValidateNested()
   @Type(() => ExperienceContext)
-  experience_context: ExperienceContext;
+  experienceContext: ExperienceContext;
 
-  @ApiProperty({ type: Card, description: 'Payment source', required: false })
+  @ApiProperty({ type: CardDto, description: 'Payment source', required: false })
   @IsOptional()
   @ValidateNested()
-  @Type(() => Card)
-  payment_source?: Card;
+  @Type(() => CardDto)
+  paymentSource: CardDto;
 }

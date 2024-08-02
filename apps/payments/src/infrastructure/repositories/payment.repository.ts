@@ -25,12 +25,7 @@ export class PaymentRepository implements IPaymentRepository<EntityManager> {
   }
 
   public async create(payment: PaymentEntity) {
-    try {
-      return await this.paymentEntityRepository.save(payment);
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
+    return await this.paymentEntityRepository.save(payment);
   }
 
   update(): Promise<PaymentEntity> {

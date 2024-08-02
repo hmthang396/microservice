@@ -5,6 +5,7 @@ import { firstValueFrom } from 'rxjs';
 import { CreateOrderRequest, CreateOrderResponse } from './paypal.type';
 import { CreateOrderInput } from 'apps/payments/src/presentations/dtos/create-order.input';
 import { HttpService } from '@nestjs/axios';
+import { GrpcInternalException } from '@app/libs/exceptions/gRPC';
 
 @Injectable()
 export class PaypalService {
@@ -34,7 +35,7 @@ export class PaypalService {
 
       return data;
     } catch (error) {
-      throw new BadRequestException('Failed to create Checkout Order in Paypal');
+		throw new GrpcInternalException(error.response.data.message);
     }
   }
 

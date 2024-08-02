@@ -7,12 +7,12 @@ import { PaypalService } from '@payments/infrastructure/services/paypal/paypal.s
 import { PaypalMapper } from '@payments/presentations/mapper/paypal.mapper';
 import { PspTransactionMapper } from '@payments/presentations/mapper/psp-transaction.mapper';
 import { ICreatePaymentUseCases } from '@payments/domain/usecases/create-payment.usecase.interface';
-import { CreatePaymentInput } from '@payments/presentations/dtos/payment-create-request.input';
 import { PaymentEntity } from '@payments/domain/entities/payment.entity';
 import { PaymentMapper } from '@payments/presentations/mapper/payment.mapper';
 import { IUnitOfWork } from '@payments/domain/repositories';
+import { GrpcInternalException, GrpcNotFoundException } from '@app/libs/exceptions/gRPC';
 
-export class CreatePaymentUseCases implements ICreatePaymentUseCases<CreatePaymentInput | PaymentCreateRequestDto> {
+export class CreatePaymentUseCases implements ICreatePaymentUseCases<PaymentCreateRequestDto> {
   constructor(
     private readonly unitOfWork: IUnitOfWork<Repository<ObjectLiteral>, EntityTarget<ObjectLiteral>, EntityManager>,
     private readonly paypalService: PaypalService,
@@ -24,7 +24,7 @@ export class CreatePaymentUseCases implements ICreatePaymentUseCases<CreatePayme
     dataSources: dataSources,
     storage: storage,
   })
-  async execute(dto: CreatePaymentInput | PaymentCreateRequestDto): Promise<PaymentEntity> {
+  async execute(dto: PaymentCreateRequestDto): Promise<PaymentEntity> {
     // Create Payment
     const paymentEntity = await this.unitOfWork.getPaymentRepository().create(PaymentMapper.toCreate(dto));
 
@@ -38,7 +38,7 @@ export class CreatePaymentUseCases implements ICreatePaymentUseCases<CreatePayme
       case PaymentProvider.Visa:
         const orderOfPayment = await this.paypalService.createOrder(
           PaypalMapper.toOrderRequest(dto),
-          dto.idempotency_key,
+          dto.idempotencyKey,
         );
 
         // Create transaction for psp
@@ -53,11 +53,14 @@ export class CreatePaymentUseCases implements ICreatePaymentUseCases<CreatePayme
       case PaymentProvider.Stripe:
         break;
       default:
-        throw new BadRequestException('INVALID_PARAMETER', 'Unsupported payment method');
+        throw new GrpcInternalException({
+          field: 'method',
+          errors: ['Payment method must be one of the following values: Paypal, Stripe, COD, Visa'],
+        });
     }
 
     if (!paymentEntity) {
-      throw new NotFoundException('Failed to create payment-order');
+      throw new GrpcInternalException('Failed to create payment-order');
     }
 
     return paymentEntity;

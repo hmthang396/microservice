@@ -23,9 +23,9 @@
     "migration:create": "cross-var ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli migration:create ./apps/$npm_config_service/src/database/migrations/$npm_config_name",
     "migration:generate": "npm run typeorm -- migration:generate ./apps/payments/src/database/migrations/$npm_config_name",
     "migration:run": "npm run build $npm_config_service && cross-var ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli -d ./apps/$npm_config_service/src/infrastructure/config/typeorm/typeorm.config.ts migration:run",
-	"proto:payments": "protoc --plugin=node_modules/.bin/protoc-gen-ts_proto -I=node_modules/microservice/proto --ts_proto_out=./ ./libs/common/src/proto/payments.proto --ts_proto_opt=nestJs=true --ts_proto_opt=fileSuffix=.pb",
-	"proto:orders": "protoc --plugin=node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./ ./libs/common/src/proto/orders.proto --ts_proto_opt=nestJs=true --ts_proto_opt=fileSuffix=.pb",
-	"proto:all": "npm run proto:payments && npm run proto:orders"
+    "proto:payments": "protoc --plugin=node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./ ./libs/common/src/proto/payments.proto --ts_proto_opt=nestJs=true --ts_proto_opt=fileSuffix=.pb",
+    "proto:orders": "protoc --plugin=node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./ ./libs/common/src/proto/orders.proto --ts_proto_opt=nestJs=true --ts_proto_opt=fileSuffix=.pb",
+    "proto:all": "npm run proto:payments && npm run proto:orders"
   },
   "dependencies": {
     "@golevelup/nestjs-rabbitmq": "^5.3.0",
@@ -51,6 +51,7 @@
     "rxjs": "^7.8.1",
     "typeorm": "^0.3.20",
     "typeorm-extension": "^3.5.1",
+    "winston-daily-rotate-file": "^5.0.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {

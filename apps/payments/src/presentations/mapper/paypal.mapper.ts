@@ -1,9 +1,8 @@
+import { PaymentCreateRequestDto } from '@app/libs';
 import { CreateOrderRequest } from '../../infrastructure/services/paypal/paypal.type';
-import { PaymentCreateRequestDto } from '../dtos/payment-create-request.dto';
-import { CreatePaymentInput } from '../dtos/payment-create-request.input';
 
 export class PaypalMapper {
-  public static toOrderRequest(dto: CreatePaymentInput | PaymentCreateRequestDto): CreateOrderRequest {
+  public static toOrderRequest(dto: PaymentCreateRequestDto): CreateOrderRequest {
     const bodyRequest: CreateOrderRequest = {
       intent: 'AUTHORIZE',
       purchase_units: [
@@ -18,7 +17,11 @@ export class PaypalMapper {
         landing_page: 'LOGIN',
         shipping_preference: 'NO_SHIPPING',
         user_action: 'PAY_NOW',
-        ...(dto?.experience_context && dto.experience_context),
+        ...(dto?.experienceContext && {
+          brand_name: dto.experienceContext.brandName,
+          cancel_url: dto.experienceContext.cancelUrl,
+          return_url: dto.experienceContext.returnUrl,
+        }),
       },
     };
 
@@ -34,24 +37,24 @@ export class PaypalMapper {
         name: e.name,
         quantity: e.quantity,
         unit_amount: {
-          currency_code: e.unit_amount.currency_code,
-          value: e.unit_amount.value.toString(),
+          currency_code: e.unitAmount.currencyCode,
+          value: e.unitAmount.value.toString(),
         },
       }));
     }
     bodyRequest.payment_source = {
       card: {
-        name: dto.payment_source.name,
-        number: dto.payment_source.number,
-        security_code: dto.payment_source.security_code,
-        expiry: dto.payment_source.expiry,
+        name: dto.paymentSource.name,
+        number: dto.paymentSource.number,
+        security_code: dto.paymentSource.securityCode,
+        expiry: dto.paymentSource.expiry,
         billing_address: {
-          country_code: dto.payment_source.billing_address.country_code,
-          address_line_1: dto.payment_source.billing_address.address_line_1,
-          address_line_2: dto.payment_source.billing_address.address_line_2,
-          admin_area_1: dto.payment_source.billing_address.admin_area_1,
-          admin_area_2: dto.payment_source.billing_address.admin_area_2,
-          postal_code: dto.payment_source.billing_address.postal_code,
+          country_code: dto.paymentSource.billingAddress.countryCode,
+          address_line_1: dto.paymentSource.billingAddress.addressLine1,
+          address_line_2: dto.paymentSource.billingAddress.addressLine2,
+          admin_area_1: dto.paymentSource.billingAddress.adminArea1,
+          admin_area_2: dto.paymentSource.billingAddress.adminArea2,
+          postal_code: dto.paymentSource.billingAddress.postalCode,
         },
       },
     };

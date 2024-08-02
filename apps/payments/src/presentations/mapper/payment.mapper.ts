@@ -1,15 +1,20 @@
 import { PaymentEntity } from '../../domain/entities/payment.entity';
-import { PaymentCreateRequestDto } from '../dtos/payment-create-request.dto';
-import { CreatePaymentInput } from '../dtos/payment-create-request.input';
+import { PaymentCreateRequestDto, PaymentCreateResponseDto, PaymentProvider } from '@app/libs';
 
 export class PaymentMapper {
-  public static toCreate(dto: CreatePaymentInput | PaymentCreateRequestDto) {
+  public static toCreate(dto: PaymentCreateRequestDto) {
     const entity = new PaymentEntity();
     entity.amount = dto.amount;
     entity.currency = dto.currency;
-    entity.provider = dto.method;
-    entity.orderId = dto.order_id;
-    entity.payerId = dto.user_id;
+    entity.provider = PaymentProvider[dto.method];
+    entity.orderId = dto.orderId;
+    entity.payerId = dto.userId;
     return entity;
+  }
+
+  public static async toResponse(entity: Promise<PaymentEntity>): Promise<PaymentCreateResponseDto> {
+    const payment = await entity;
+    const dto = new PaymentCreateResponseDto();
+    return dto;
   }
 }
