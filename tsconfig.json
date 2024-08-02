@@ -25,7 +25,7 @@
         "libs/common/src/*"
       ],
       "@payments/*": [
-        "apps/payments/src/*"
+        "apps/payment-service/src/*"
       ],
       "@orders/*": [
         "apps/orders/src/*"

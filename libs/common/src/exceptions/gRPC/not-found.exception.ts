@@ -7,4 +7,3 @@ export class GrpcNotFoundException extends RpcException {
     super(errorObject(error, status.NOT_FOUND));
   }
 }
-

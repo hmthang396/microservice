@@ -7,4 +7,3 @@ export class GrpcUnauthenticatedException extends RpcException {
     super(errorObject(error, status.UNAUTHENTICATED));
   }
 }
-

@@ -1,4 +1,4 @@
-export * from './aborted.exception'
+export * from './aborted.exception';
 export * from './already-exists.exception';
 export * from './cancelled.exception';
 export * from './internal.exception';

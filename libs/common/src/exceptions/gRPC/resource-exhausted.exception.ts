@@ -7,4 +7,3 @@ export class GrpcResourceExhaustedException extends RpcException {
     super(errorObject(error, status.RESOURCE_EXHAUSTED));
   }
 }
-

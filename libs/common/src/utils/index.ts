@@ -1,1 +1,1 @@
-export * from './error-object'
+export * from './error-object';

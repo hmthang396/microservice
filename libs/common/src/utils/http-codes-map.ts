@@ -20,4 +20,3 @@ export const HTTP_CODE_FROM_GRPC: Record<number, number> = {
   [Status.DATA_LOSS]: HttpStatus.INTERNAL_SERVER_ERROR,
   [Status.UNAUTHENTICATED]: HttpStatus.UNAUTHORIZED,
 };
-

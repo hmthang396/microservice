@@ -32,5 +32,3 @@ export class HttpToGrpcInterceptor implements NestInterceptor {
     );
   }
 }
-
-

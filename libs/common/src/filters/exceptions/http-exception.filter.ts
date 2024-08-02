@@ -10,12 +10,10 @@ export class GRPCExceptionFilter implements ExceptionFilter {
   constructor(private logger: LoggerService) {}
 
   catch(exception: HttpException, host: ArgumentsHost) {
-	console.log(exception);
-	
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
     const request: any = ctx.getRequest();
-	const status = exception?.getStatus ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
+    const status = exception?.getStatus ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
     const message =
       exception instanceof HttpException
         ? (exception.getResponse() as IError)
@@ -31,9 +29,8 @@ export class GRPCExceptionFilter implements ExceptionFilter {
     };
 
     this.logMessage(request, message, status, exception);
-	throw exception;
-	
-    // response.status(status).json(responseData);
+
+    response.status(status).json(responseData);
   }
 
   private logMessage(request: any, message: IError, status: number, exception: any) {

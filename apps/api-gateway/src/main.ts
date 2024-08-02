@@ -6,7 +6,8 @@ import { APP_ROUTE_PREFIX, APP_VERSION, BODY_SIZE_LIMIT } from '@app/libs/consta
 import * as compression from 'compression';
 import * as bodyParser from 'body-parser';
 import helmet from 'helmet';
-import { HttpResponseInterceptor } from '@app/libs/interceptors/response/response.interceptor';
+import { GRPCExceptionFilter } from '@app/libs/filters';
+import { GrpcToHttpInterceptor } from '@app/libs/interceptors/exceptions/grpc-to-http.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(ApiGatewayModule);
@@ -26,9 +27,8 @@ async function bootstrap() {
     .use(compression())
     .use(bodyParser.json({ limit: BODY_SIZE_LIMIT }))
     .use(bodyParser.urlencoded({ limit: BODY_SIZE_LIMIT, extended: true }))
-    // .useGlobalFilters(new HttpExceptionFilter(AppModule.logger))
-    // .useGlobalInterceptors(new LoggingInterceptor(AppModule.logger))
-    .useGlobalInterceptors(new HttpResponseInterceptor())
+    .useGlobalFilters(new GRPCExceptionFilter(ApiGatewayModule.logger))
+    .useGlobalInterceptors(new GrpcToHttpInterceptor())
     .useGlobalPipes(
       new ValidationPipe({
         exceptionFactory: (errors) => {

@@ -1,1 +1,1 @@
-export * from './payments.pb';
+export * from './payment-service.pb';

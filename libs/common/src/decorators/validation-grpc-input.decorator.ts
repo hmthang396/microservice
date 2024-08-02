@@ -9,7 +9,6 @@ export function ValidateGrpcInput(dtoClass: any) {
       const [data] = args;
       const object = plainToInstance(dtoClass, data);
       const errors = await validate(object);
-
       if (errors.length > 0) {
         const formatError = (error: ValidationError) => {
           if (error.children?.length) {
@@ -23,7 +22,7 @@ export function ValidateGrpcInput(dtoClass: any) {
             errors: Object.values(error.constraints ?? {}),
           };
         };
-		
+
         throw new GrpcInvalidArgumentException(errors.map((error) => formatError(error)));
       }
 
@@ -31,6 +30,3 @@ export function ValidateGrpcInput(dtoClass: any) {
     };
   };
 }
-
-
-

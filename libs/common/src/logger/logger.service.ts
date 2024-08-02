@@ -67,4 +67,3 @@ export class LoggerService extends Logger implements ILogger {
     }
   }
 }
-

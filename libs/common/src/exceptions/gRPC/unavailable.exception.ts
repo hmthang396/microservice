@@ -7,4 +7,3 @@ export class GrpcUnavailableException extends RpcException {
     super(errorObject(error, status.UNAVAILABLE));
   }
 }
-
